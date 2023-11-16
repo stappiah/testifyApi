@@ -50,10 +50,14 @@ class Product(models.Model):
         'Vendor', on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    description = models.TextField()
-    stock_quantity = models.PositiveIntegerField()
-    product_image = models.ImageField(upload_to="product_images/")
+    discount_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    stock_quantity = models.PositiveIntegerField(null=True, blank=True)
+    product_brand = models.CharField(max_length=100, null=True, blank=True)
+    product_category = models.CharField(max_length=100, null=True, blank=True)
+    product_image = models.ImageField(
+        upload_to="product_images/", null=True, blank=True)
     approved = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
@@ -107,16 +111,17 @@ class OrderItem(models.Model):
 
 class Vendor(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    store_name = models.CharField(max_length=50)
+    shop_name = models.CharField(max_length=50)
     address = models.CharField(max_length=50)
     region = models.CharField(choices=LOCATION_REGION, max_length=20)
     phone_number = models.CharField(max_length=20)
     email_address = models.EmailField(null=True, blank=True)
-    vendor_logo = models.ImageField(upload_to='vendor_logos')
+    vendor_logo = models.ImageField(
+        upload_to='vendor_logos', null=True, blank=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.store_name
+        return self.shop_name
 
 
 class VendorFollower(models.Model):

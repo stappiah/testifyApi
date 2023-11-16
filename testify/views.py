@@ -5,6 +5,7 @@ from rest_framework import permissions, authentication, generics, response
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 # Create your views here.
 
@@ -41,18 +42,56 @@ class RetrieveDeleteProductImages(generics.RetrieveDestroyAPIView):
     queryset = models.ProductImage.objects.all()
 
 
-
-
-
-class GetProductColors(generics.ListAPIView):
+class ProductColorCreation(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
     serializer_class = serializers.ProductColorSerializer
+    queryset = models.Color.objects.all()
 
-    def get_queryset(self):
-        product = self.request.query_params.get('product')
-        color = models.Color.objects.filter(product=product)
-        return color
+
+
+class DeleteProductColor(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.ProductColorSerializer
+    queryset = models.Color.objects.all()
+
+
+class GetProductColors(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get(self, request, pk):
+        product = models.Product.objects.get(id=pk)
+        queryset = models.Color.objects.filter(product=product)
+        serializer = serializers.ProductColorSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+
+class ProductSizeCreation(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.ProductSizeSerializer
+    queryset = models.ProductSize.objects.all()
+
+
+class DeleteProductSize(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.ProductSizeSerializer
+    queryset = models.ProductSize.objects.all()
+
+
+class GetProductSizes(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get(self, request, pk):
+        product = models.Product.objects.get(id=pk)
+        queryset = models.ProductSize.objects.filter(product=product)
+        serializer = serializers.ProductSizeSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class OrderCreationView(generics.CreateAPIView):

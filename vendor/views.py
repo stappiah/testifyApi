@@ -2,6 +2,8 @@ from rest_framework import generics
 from rest_framework import permissions, authentication, serializers
 from testify import models
 from vendor import serializers
+from account.models import Account
+from rest_framework.response import Response
 
 # Create your views here.
 
@@ -29,3 +31,13 @@ class GetFollowers(generics.GenericAPIView):
         vendor = models.Vendor.objects.get(id=pk)
         followers = models.VendorFollower.objects.filter(vendor=vendor)
         return followers
+
+
+class GetUserShops(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.VendorSerializer
+
+    def get_queryset(self):
+        vendor = models.Vendor.objects.filter(user=self.request.user)
+        return vendor
