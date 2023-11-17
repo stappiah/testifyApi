@@ -108,6 +108,16 @@ DATABASES = {
     )
 }
 
+from account.models import Account
+
+if not Account.objects.filter(is_superuser=True).first():
+    user = Account.objects.create(
+        username = 'test@admin.com',
+        is_superuser = True,
+        is_staff = True,
+    )
+    user.set_password('Success@2023')
+    user.save()
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
