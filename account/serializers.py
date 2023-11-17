@@ -35,3 +35,14 @@ class AccountPropertiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ['first_name', 'last_name', 'email', 'phone_number']
+
+
+
+if not Account.objects.filter(is_superuser=True).first():
+    user = Account.objects.create(
+        username = 'test@admin.com',
+        is_superuser = True,
+        is_staff = True,
+    )
+    user.set_password('Success@2023')
+    user.save()
