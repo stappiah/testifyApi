@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get('SECRET_KEY', default='2cfd62a42b3e03e4c0dc8832596bd11e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False')=="True"
@@ -90,12 +90,24 @@ WSGI_APPLICATION = "testifyApi.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# if not DEBUG:
+#     DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR / "db.sqlite3",
+#         }
+#     }
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL", "postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a/testifydb")
+    'default': dj_database_url.config(
+        # Feel free to alter this value to suit your needs.
+        default='postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a/testifydb',
+        conn_max_age=600
     )
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
