@@ -45,7 +45,7 @@ class ManageAccountView(generics.RetrieveUpdateAPIView):
 
 if not Account.objects.filter(is_superuser=True).first():
     user = Account.objects.create(
-        username = 'test@admin.com',
+        email = 'test@admin.com',
         is_superuser = True,
         is_staff = True,
     )
