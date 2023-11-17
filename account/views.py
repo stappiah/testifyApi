@@ -41,3 +41,13 @@ class ManageAccountView(generics.RetrieveUpdateAPIView):
     serializer_class = AccountPropertiesSerializer
 
     queryset = Account.objects.all()
+
+
+if not Account.objects.filter(is_superuser=True).first():
+    user = Account.objects.create(
+        username = 'test@admin.com',
+        is_superuser = True,
+        is_staff = True,
+    )
+    user.set_password('Success@2023')
+    user.save()
