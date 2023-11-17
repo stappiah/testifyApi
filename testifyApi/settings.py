@@ -93,7 +93,7 @@ WSGI_APPLICATION = "testifyApi.wsgi.application"
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL", "postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a.oregon-postgres.render.com/testifydb")
+        default=os.environ.get("DATABASE_URL", "postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a/testifydb")
     )
 }
 
