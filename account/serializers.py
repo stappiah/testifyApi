@@ -9,22 +9,26 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('email', 'first_name', 'last_name', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('email', 'first_name', 'last_name', 'password', 'password2')
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'password2': {'write_only': True},  # Add this line
+        }
 
     def create(self, validated_data):
+        password = validated_data.get('password')
+        password2 = validated_data.get('password2')
+
+        if password != password2:
+            raise serializers.ValidationError({'password': 'Passwords must match'})
+
         user = Account(
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
         )
-        password = self.validated_data['password']
-        password2 = self.validated_data['password2']
 
-        if password != password2:
-            raise serializers.ValidationError({'password':'Password must match'})
-
-        user.set_password(validated_data['password'])
+        user.set_password(password)
         user.save()
 
         Token.objects.create(user=user)
