@@ -30,15 +30,32 @@ class ProductSerializer(serializers.ModelSerializer):
 
     colors = ProductColorSerializer(many=True, read_only=True)
     sizes = ProductSizeSerializer(many=True, read_only=True)
-    # vendor_shop_name = serializers.SerializerMethodField(read_only=True)
+    vendor_name = serializers.SerializerMethodField()
+    vendor_address = serializers.SerializerMethodField()
+    vendor_region = serializers.SerializerMethodField()
 
-    # def get_vendor_shop_name(self, obj):
-    #     return obj.vendor.shop_name
     
     class Meta:
         model = Product
         fields = "__all__"
 
+    def get_vendor_name(self, obj):
+        if obj.vendor:
+            return obj.vendor.shop_name
+        return "No Vendor"
+    
+    def get_vendor_address(self, obj):
+        if obj.vendor:
+            return obj.vendor.address
+        return "No Vendor"
+    
+    def get_vendor_region(self, obj):
+        if obj.vendor:
+            return obj.vendor.region
+        return "No Vendor"
+    
+    # def get_vendor_shop_name(self, obj):
+    #     return obj.vendor.shop_name
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

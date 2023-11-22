@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', default='2cfd62a42b3e03e4c0dc8832596bd11e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False')=="True"
+DEBUG = False
 
 ALLOWED_HOSTS = ["192.168.43.67", "localhost", "testifyapp.onrender.com"]
 

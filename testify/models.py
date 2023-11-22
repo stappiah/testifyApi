@@ -57,7 +57,7 @@ class Product(models.Model):
     product_brand = models.CharField(max_length=100, null=True, blank=True)
     product_category = models.CharField(max_length=100, null=True, blank=True)
     product_image = models.ImageField(
-        upload_to="product_images/", null=True, blank=True)
+        upload_to="product_images", null=True, blank=True)
     approved = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
