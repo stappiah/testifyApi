@@ -148,8 +148,7 @@ class Wishlist(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     products = models.ManyToManyField(
         Product, related_name='wishlists', blank=True)
-    name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} - {self.user.first_name} {self.user.last_name}'s Wishlist"
+        return f"{self.user.first_name} {self.user.last_name}'s Wishlist"

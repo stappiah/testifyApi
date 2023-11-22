@@ -12,4 +12,5 @@ urlpatterns = [
     path("product-color", views.ProductColorCreation.as_view()),
     path("delete-color/<int:pk>", views.DeleteProductColor.as_view()),
     path("retrieve-color/<int:pk>", views.GetProductColors.as_view()),
+    path("wishlist", views.WishListCreationView.as_view()),
 ]

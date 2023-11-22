@@ -1,7 +1,7 @@
 from .models import Product, Order, OrderItem, Vendor, ProductReview, VendorReview, Wishlist, Color, ProductSize, ProductImage
 from rest_framework import serializers
 from account.models import Account
-
+# from vendor.serializers import VendorSerializer
 
 class ProductColorSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
@@ -28,9 +28,17 @@ class ProductSerializer(serializers.ModelSerializer):
         queryset=Account.objects.all(), default=serializers.CurrentUserDefault()
     )
 
+    colors = ProductColorSerializer(many=True, read_only=True)
+    sizes = ProductSizeSerializer(many=True, read_only=True)
+    # vendor_shop_name = serializers.SerializerMethodField(read_only=True)
+
+    # def get_vendor_shop_name(self, obj):
+    #     return obj.vendor.shop_name
+    
     class Meta:
         model = Product
         fields = "__all__"
+
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

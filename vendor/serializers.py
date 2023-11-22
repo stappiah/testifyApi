@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from testify.models import Vendor, VendorReview, VendorFollower
+from testify.models import Vendor, VendorReview, VendorFollower, Product
 from account.models import Account
+from testify.serializers import ProductColorSerializer
 
 
 class VendorSerializer(serializers.ModelSerializer):
@@ -22,4 +23,12 @@ class VendorReview(serializers.ModelSerializer):
 class VendorFollowerSerializer(serializers.ModelSerializer):
     class Meta:
         model = VendorFollower
+        fields = "__all__"
+
+
+class ProductWithColorSerializer(serializers.ModelSerializer):
+    colors = ProductColorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
         fields = "__all__"

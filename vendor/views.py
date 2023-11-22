@@ -4,6 +4,7 @@ from testify import models
 from vendor import serializers
 from account.models import Account
 from rest_framework.response import Response
+from testify.serializers import ProductSerializer
 
 # Create your views here.
 
@@ -41,3 +42,16 @@ class GetUserShops(generics.ListAPIView):
     def get_queryset(self):
         vendor = models.Vendor.objects.filter(user=self.request.user)
         return vendor
+
+
+class GetVendorProducts(generics.GenericAPIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self,request, pk):
+        vendor = models.Vendor.objects.get(id=pk)
+        product = models.Product.objects.filter(vendor=vendor)
+        serializer = serializers.ProductWithColorSerializer(product, many=True)
+        return Response(serializer.data)
+
+# class 
