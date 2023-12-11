@@ -93,20 +93,20 @@ WSGI_APPLICATION = "testifyApi.wsgi.application"
 # if not DEBUG:
 #     DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
 # else:
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config(
-        # Feel free to alter this value to suit your needs.
-        default='postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a/testifydb',
-        conn_max_age=600
-    )
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Feel free to alter this value to suit your needs.
+#         default='postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a/testifydb',
+#         conn_max_age=600
+#     )
+# }
 
 
 # Password validation

@@ -6,6 +6,8 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.db.models import Q
+from vendor.serializers import VendorSerializer
 
 # Create your views here.
 
@@ -49,7 +51,6 @@ class ProductColorCreation(generics.CreateAPIView):
     queryset = models.Color.objects.all()
 
 
-
 class DeleteProductColor(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
@@ -66,7 +67,6 @@ class GetProductColors(generics.GenericAPIView):
         queryset = models.Color.objects.filter(product=product)
         serializer = serializers.ProductColorSerializer(queryset, many=True)
         return Response(serializer.data)
-
 
 
 class ProductSizeCreation(generics.CreateAPIView):
@@ -129,6 +129,17 @@ class ProductReviewCreationView(generics.CreateAPIView):
     queryset = models.ProductReview.objects.all()
 
 
+class GetProductReview(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get(self, request, pk):
+        product = models.Product.objects.get(id=pk)
+        review = models.ProductReview.objects.filter(product=product)
+        serializer = serializers.ProductReviewSerializer(review, many=True)
+        return Response(serializer.data)
+
+
 class RetrieveUpdateOrderView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
@@ -143,8 +154,80 @@ class WishListCreationView(generics.CreateAPIView):
     queryset = models.Wishlist.objects.all()
 
 
+class RemoveWishlist(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.WishListSerializer
+
+    def delete(self, request, pk):
+        try:
+            product = models.Product.objects.get(id=pk)
+            wishlist = models.Wishlist.objects.get(user=request.user, product=product)
+            wishlist.delete()
+            return Response({"response": "Wishlist item removed successfully"})
+        except models.Wishlist.DoesNotExist:
+            return Response({"response": "Wishlist item does not exist"}, status=404)
+
+
+class CheckProductAsWishList(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.WishListSerializer
+
+    def get(self, request, pk):
+        try:
+            product = models.Product.objects.get(id=pk)
+            wishlist = models.Wishlist.objects.get(user=request.user, product=product)
+            return Response({"response": "Product is added as wishlist"})
+        except models.Wishlist.DoesNotExist:
+            return Response({"response": "Wishlist item does not exist"}, status=404)
+
+
+class GetUserWishList(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get(self, request):
+        product = models.Wishlist.objects.filter(user=request.user)
+        serializer = serializers.GetWishListSerializer(product, many=True)
+        return Response(serializer.data)
+
+
 class RetrieveUpdateOrderView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
     serializer_class = serializers.WishListSerializer
     queryset = models.Wishlist.objects.all()
+
+
+class SearchForProduct(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.ProductSerializer
+
+    def get_queryset(self):
+        q = self.request.query_params.get("q")
+        if q:
+            product = models.Product.objects.filter(
+                Q(name__icontains=q)
+                | Q(product_brand__icontains=q)
+                | Q(product_category__icontains=q)
+                | Q(vendor__shop_name__icontains=q)
+            )
+            return product
+
+
+class SearchForVendor(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = VendorSerializer
+
+    def get_queryset(self):
+        q = self.request.query_params.get("q")
+        if q:
+            vendor = models.Vendor.objects.filter(
+                Q(shop_name__icontains=q)
+                | Q(region__icontains=q)
+                | Q(address__icontains=q)
+            )
+            return vendor
