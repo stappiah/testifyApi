@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, parsers
 from rest_framework import permissions, authentication, serializers
 from testify import models
 from vendor import serializers
@@ -14,6 +14,7 @@ class VendorCreationView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
     serializer_class = serializers.VendorSerializer
+    parser_classes = [parsers.MultiPartParser]
     queryset = models.Vendor.objects.all()
 
 
