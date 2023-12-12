@@ -104,25 +104,35 @@ class GetVendors(generics.ListAPIView):
     queryset = models.Vendor.objects.all()
 
 
-class SearchVendorProduct(generics.GenericAPIView):
+class SearchVendorProduct(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
-    # serializer_class = ProductSerializer
+    serializer_class = ProductSerializer
 
-    def get(self, request, pk):
-        vendor = models.Vendor.objects.get(id=pk)
-        product = models.Product.objects.filter(vendor=vendor)
-        serializer = ProductSerializer(product, many=True)
-        return serializer.data
+    def get_queryset(self):
+        # Get the vendor based on the provided primary key (pk) in the URL
+        vendor_id = self.kwargs.get("pk")
+        try:
+            vendor = models.Vendor.objects.get(id=vendor_id)
+        except models.Vendor.DoesNotExist:
+            return (
+                models.Product.objects.none()
+            )  # Return an empty queryset if the vendor is not found
 
-        # q = self.request.query_params.get("q")
-        # if q:
-        #     # product = product.filter(name__icontains=q)
-        #     product = product.filter(
-        #         Q(name__icontains=q)
-        #         | Q(product_brand__icontains=q)
-        #         | Q(product_category__icontains=q)
-        #         | Q(vendor__shop_name__icontains=q)
-        #     )
-        #     return product
-            
+        # Get the products related to the vendor
+        queryset = models.Product.objects.filter(vendor=vendor)
+
+        # Search query parameter
+        search_query = self.request.query_params.get("q", None)
+
+        # Apply search filter if a search query is provided
+        if search_query:
+            # Using Q objects to create complex queries
+            queryset = queryset.filter(
+                Q(name__icontains=search_query)
+                | Q(product_brand__icontains=search_query)
+                | Q(product_category__icontains=search_query)
+                | Q(vendor__shop_name__icontains=search_query)
+            )
+
+        return queryset

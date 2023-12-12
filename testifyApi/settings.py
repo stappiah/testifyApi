@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', default='2cfd62a42b3e03e4c0dc8832596bd11e')
+SECRET_KEY = os.environ.get("SECRET_KEY", default="2cfd62a42b3e03e4c0dc8832596bd11e")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["192.168.43.67", "localhost", "testifyapp.onrender.com"]
+ALLOWED_HOSTS = ["192.168.43.67", "localhost", "127.0.0.1", "testifyapp.onrender.com"]
 
 
 # Application definition
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
-    'whitenoise'
+    "whitenoise",
 ]
 
 MIDDLEWARE = [
@@ -102,10 +102,10 @@ WSGI_APPLICATION = "testifyApi.wsgi.application"
 # }
 
 DATABASES = {
-    'default': dj_database_url.config(
+    "default": dj_database_url.config(
         # Feel free to alter this value to suit your needs.
-        default='postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a/testifydb',
-        conn_max_age=600
+        default="postgres://testifydb_user:8XyikfQnJWkc1Pjk6j45zzlV1XCvI8Bg@dpg-clb7c8mg1b2c73d20bd0-a/testifydb",
+        conn_max_age=600,
     )
 }
 
