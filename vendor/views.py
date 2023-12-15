@@ -5,7 +5,8 @@ from vendor import serializers
 from account.models import Account
 from rest_framework.response import Response
 from testify.serializers import ProductSerializer
-from django.db.models import Q
+from django.db.models import Q, Avg
+from decimal import Decimal
 
 # Create your views here.
 
@@ -86,15 +87,16 @@ class GetUserShops(generics.ListAPIView):
         return vendor
 
 
-class GetVendorProducts(generics.GenericAPIView):
+class GetVendorProducts(generics.ListAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ProductSerializer
 
-    def get(self, request, pk):
-        vendor = models.Vendor.objects.get(id=pk)
-        product = models.Product.objects.filter(vendor=vendor)
-        serializer = ProductSerializer(product, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        vendor_id = self.kwargs.get("pk")
+        vendor = models.Vendor.objects.get(id=vendor_id)
+        queryset = models.Product.objects.filter(vendor=vendor)
+        return queryset
 
 
 class GetVendors(generics.ListAPIView):
@@ -136,3 +138,37 @@ class SearchVendorProduct(generics.ListAPIView):
             )
 
         return queryset
+
+
+class VendorAverageRating(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.VendorReviewSerializer
+
+    def get(self, request, pk):
+        vendor_id = models.Vendor.objects.get(id=pk)
+        rating = models.VendorReview.objects.filter(vendor=vendor_id)
+        if len(rating) != 0:
+            average_rating = rating.aggregate(avg_rating=Avg("rating"))["avg_rating"]
+            average_rating = round(Decimal(average_rating), 1)
+            return Response({"average_rating": average_rating})
+        return Response({"response": "No rating"})
+
+
+class VendorReviewCreation(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.VendorReviewSerializer
+    queryset = models.VendorReview.objects.all()
+
+
+class GetVendorReview(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = serializers.VendorReviewSerializer
+
+    def get_queryset(self):
+        vendor_id = self.kwargs.get("pk")
+        vendor = models.Vendor.objects.get(id=vendor_id)
+        review = models.VendorReview.objects.filter(vendor=vendor)
+        return review

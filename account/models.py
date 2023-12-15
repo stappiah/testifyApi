@@ -2,6 +2,25 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+LOCATION_REGION = [
+    ("Upper West Region", "Upper West Region"),
+    ("Upper East Region", "Upper East Region"),
+    ("North East Region", "North East Region"),
+    ("Northern Region", "Northern Region"),
+    ("Savannah Region", "Savannah Region"),
+    ("Bono East Region", "Bono East Region"),
+    ("Brong Ahafo Region", "Brong Ahafo Region"),
+    ("Oti Region", "Oti Region"),
+    ("Volta Region", "Volta Region"),
+    ("Eastern Region", "Eastern Region"),
+    ("Ashanti Region", "Ashanti Region"),
+    ("Ahafo Region", "Ahafo Region"),
+    ("Western North Region", "Western North Region"),
+    ("Western Region", "Western Region"),
+    ("Central Region", "Central Region"),
+    ("Greater Accra Region", "Greater Accra Region"),
+]
+
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -31,6 +50,10 @@ class Account(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
+    gender = models.CharField(max_length=20, null=True, blank=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    address = models.CharField(max_length=64, blank=True, null=True)
+    region = models.CharField(choices=LOCATION_REGION, max_length=20, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

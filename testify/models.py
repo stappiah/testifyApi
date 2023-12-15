@@ -155,9 +155,10 @@ class ProductReview(models.Model):
 
 class VendorReview(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    rating = models.DecimalField(max_digits=3, decimal_places=2)
-    comment = models.TextField()
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="rating")
+    rating = models.FloatField()
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Wishlist(models.Model):
