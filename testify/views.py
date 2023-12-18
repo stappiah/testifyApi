@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from . import serializers
 from . import models
-from rest_framework import permissions, authentication, generics, response
+from rest_framework import permissions, authentication, generics, response, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.pagination import PageNumberPagination
@@ -16,14 +16,14 @@ class ProductCreationListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
     serializer_class = serializers.ProductSerializer
-    parser_classes = [MultiPartParser]
+    # parser_classes = [MultiPartParser]
     queryset = models.Product.objects.all()
 
 
 class RetrieveDeleteUpdateProductView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
-    parser_classes = [MultiPartParser]
+    # parser_classes = [MultiPartParser]
     serializer_class = serializers.ProductSerializer
     queryset = models.Product.objects.all()
     # parser_classes = PageNumberPagination
@@ -49,6 +49,22 @@ class ProductColorCreation(generics.CreateAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     serializer_class = serializers.ProductColorSerializer
     queryset = models.Color.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.validated_data['user']
+        product = serializer.validated_data['product']
+        color = serializer.validated_data['color']
+
+        # Check if the color already exists for the given user and product
+        if models.Color.objects.filter(user=user, product=product, color=color).exists():
+            return Response({'message': 'Color already exists for this user and product.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class DeleteProductColor(generics.DestroyAPIView):

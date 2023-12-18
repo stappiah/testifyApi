@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path("", views.GetVendors.as_view()),
     path("register", views.VendorCreationView.as_view()),
-    path("vendor-details/<int:pk>", views.RetrieveUpdateVendorView.as_view()),
+    path("details/<int:pk>", views.RetrieveUpdateVendorView.as_view()),
     path("user-shop", views.GetUserShops.as_view()),
     path("product/<int:pk>", views.GetVendorProducts.as_view()),
     path("follow-vendor", views.FollowVendor.as_view()),
