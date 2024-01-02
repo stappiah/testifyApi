@@ -60,7 +60,7 @@ class ProductColorCreation(generics.CreateAPIView):
 
         # Check if the color already exists for the given user and product
         if models.Color.objects.filter(user=user, product=product, color=color).exists():
-            return Response({'message': 'Color already exists for this user and product.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Color already exists for this product.'}, status=status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -90,6 +90,22 @@ class ProductSizeCreation(generics.CreateAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     serializer_class = serializers.ProductSizeSerializer
     queryset = models.ProductSize.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.validated_data['user']
+        product = serializer.validated_data['product']
+        size = serializer.validated_data['size']
+
+        
+        if models.ProductSize.objects.filter(user=user, product=product, size=size).exists():
+            return Response({'message': 'Size already exists for this product.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class DeleteProductSize(generics.DestroyAPIView):
