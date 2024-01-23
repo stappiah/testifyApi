@@ -27,7 +27,12 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default="2cfd62a42b3e03e4c0dc8832596bd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["192.168.43.67", "localhost", "192.168.100.7", "testifyapp.onrender.com"]
+ALLOWED_HOSTS = [
+    "192.168.43.67",
+    "localhost",
+    "192.168.100.7",
+    "testifyapp.onrender.com",
+]
 
 
 # Application definition
@@ -44,7 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
-    "whitenoise",
+    "whitenoise.runserver_nostatic",
 ]
 
 MIDDLEWARE = [
@@ -80,6 +85,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.media",
             ],
         },
     },
