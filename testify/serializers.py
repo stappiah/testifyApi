@@ -40,32 +40,16 @@ class ProductSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
         queryset=Account.objects.all(), default=serializers.CurrentUserDefault()
     )
-
     colors = ProductColorSerializer(many=True, read_only=True)
     sizes = ProductSizeSerializer(many=True, read_only=True)
-    vendor_name = serializers.SerializerMethodField()
-    vendor_address = serializers.SerializerMethodField()
-    vendor_region = serializers.SerializerMethodField()
+    vendor_name = serializers.ReadOnlyField()
+    vendor_address = serializers.ReadOnlyField()
+    vendor_region = serializers.ReadOnlyField()
     rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = "__all__"
-
-    def get_vendor_name(self, obj):
-        if obj.vendor:
-            return obj.vendor.shop_name
-        return "No Vendor"
-
-    def get_vendor_address(self, obj):
-        if obj.vendor:
-            return obj.vendor.address
-        return "No Vendor"
-
-    def get_vendor_region(self, obj):
-        if obj.vendor:
-            return obj.vendor.region
-        return "No Vendor"
 
     def get_rating(self, obj):
         ratings = obj.rating.all()
@@ -77,9 +61,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=Account.objects.all(), default=serializers.CurrentUserDefault()
-    )
 
     class Meta:
         model = ProductImage

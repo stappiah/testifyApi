@@ -6,6 +6,7 @@ urlpatterns = [
     path("product-detail/<int:pk>", views.RetrieveDeleteUpdateProductView.as_view()),
     path("product-image", views.CreateProductImages.as_view()),
     path("product-image/<int:pk>", views.RetrieveDeleteProductImages.as_view()),
+    path("images/<int:pk>", views.GetProductImages.as_view()),
     path("product-size", views.ProductSizeCreation.as_view()),
     path("retrieve-product-size/<int:pk>", views.GetProductSizes.as_view()),
     path("delete-product-size/<int:pk>", views.DeleteProductSize.as_view()),

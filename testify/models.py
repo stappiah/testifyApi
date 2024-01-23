@@ -66,6 +66,30 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def vendor_name(self):
+        try:
+            vendor = self.vendor.shop_name
+        except:
+            return "No vendor"
+        return vendor
+
+    @property
+    def vendor_address(self):
+        try:
+            address = self.vendor.address
+        except:
+            return "No address"
+        return address
+
+    @property
+    def vendor_region(self):
+        try:
+            region = self.vendor.region
+        except:
+            return "No region"
+        return region
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -121,6 +145,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} - {self.size} - {self.color}"
+
+
+class ShippingAddress(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    address = models.CharField(max_length=150)
+    city = models.CharField(max_length=150)
+    region = models.CharField(choices=LOCATION_REGION, max_length=20)
 
 
 class Vendor(models.Model):
